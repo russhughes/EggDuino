@@ -5,15 +5,22 @@ void initHardware(){
 	SPMCSR &= ~SELFPRGEN;
 
 	loadPenPosFromEE();
-
+// SM,10000,1000,1000
+#ifdef BOARD_ULN2003
+	pinMode(engraverPin, OUTPUT);
+	rotMotor.setMaxSpeed(800.0);
+	rotMotor.setAcceleration(300.0);
+	penMotor.setMaxSpeed(800.0);
+	penMotor.setAcceleration(300.0);
+#else
 	pinMode(enableRotMotor, OUTPUT);
 	pinMode(enablePenMotor, OUTPUT);
 	pinMode(engraverPin, OUTPUT);
-
 	rotMotor.setMaxSpeed(2000.0);
 	rotMotor.setAcceleration(10000.0);
 	penMotor.setMaxSpeed(2000.0);
 	penMotor.setAcceleration(10000.0);
+#endif
 	motorsOff();
 	penServo.attach(servoPin);
 	penServo.write(penState);
@@ -44,14 +51,21 @@ void sendError(){
 }
 
 void motorsOff() {
+#ifdef BOARD_ULN2003
+	for (byte i= 2; i < 10; i++)
+		digitalWrite(i, LOW);
+#else
 	digitalWrite(enableRotMotor, HIGH);
 	digitalWrite(enablePenMotor, HIGH);
+#endif
 	motorsEnabled = 0;
 }
 
 void motorsOn() {
+#ifndef BOARD_ULN2003
 	digitalWrite(enableRotMotor, LOW) ;
 	digitalWrite(enablePenMotor, LOW) ;
+#endif
 	motorsEnabled = 1;
 }
 
@@ -91,6 +105,14 @@ void prepareMove(uint16_t duration, int penStepsEBB, int rotStepsEBB) {
 	}
 	if( (1 == rotStepCorrection) && (1 == penStepCorrection) ){ // if coordinatessystems are identical
 		//set Coordinates and Speed
+
+#ifdef BOARD_ULN2003
+		// map 3200x800 eggbot corrdinates to our 28BYJ-48's penStepsPerRev and rotStepsUseable
+
+		rotStepsEBB = map(rotStepsEBB, 0, 3200, 0, penStepsPerRev);
+		penStepsEBB = map(penStepsEBB, 0, 800, 0, rotStepsUseable);
+#endif		
+
 		rotMotor.move(rotStepsEBB);
 		rotMotor.setSpeed( abs( (float)rotStepsEBB * (float)1000 / (float)duration ) );
 		penMotor.move(penStepsEBB);

@@ -28,8 +28,29 @@
 
 #define initSting "EBBv13_and_above Protocol emulated by Eggduino-Firmware V1.x"
 
-#define BOARD_ZAGGO
+#define BOARD_ULN2003
+//#define BOARD_ZAGGO
 //#define BOARD_CNCSHIELD
+
+#ifdef BOARD_ULN2003
+	// Mini Spherebot using 28BYJ-48 Steppers with ULN2003 Drivers
+	// http://www.thingiverse.com/thing:1461709
+	#define rotMicrostep 16
+	#define penMicrostep 16
+	#define servoPin 10
+	#define engraverPin 11
+	
+	// These values work for my 28BYJ-48's, Your's might 
+	// be different and may need adjustment.
+	
+	#define penStepsPerRev 4096
+	#define rotStepsUseable 1100
+	
+	//Buttons (uncomment to enable)
+	//#define prgButton 2 // PRG button
+	//#define penToggleButton 12 // pen up/down button
+	//#define motorsButton 4 // motors enable button
+#endif
 
 #ifdef BOARD_ZAGGO
 	//Zaggo SphereBot design: http://pleasantsoftware.com/developer/3d/spherebot/
@@ -90,8 +111,14 @@ void initHardware();
 void moveOneStep();
 
 //make Objects
+#ifdef BOARD_ULN2003
+AccelStepper rotMotor(AccelStepper::HALF4WIRE, 2,4,3,5, true);
+AccelStepper penMotor(AccelStepper::HALF4WIRE, 6,8,7,9, true);
+#else
 AccelStepper rotMotor(1, step1, dir1);
 AccelStepper penMotor(1, step2, dir2);
+#endif
+
 VarSpeedServo penServo;
 SerialCommand SCmd;
 //create Buttons
