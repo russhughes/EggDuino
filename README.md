@@ -1,3 +1,6 @@
+
+This is a fork of the Yura80/EggDuino firmware that adds support for 28BYJ-48 Stepper motors driven by ULN2003's off Arduino pins 2,3,4,5 for the rotational axis, pins 6,7,8,9 for the pen axis and pin 10 for the servo. Tested with Arduino IDE 1.8.0 running http://www.thingiverse.com/thing:1461709
+
 This is the fork of cocktailyogi/EggDuino firmware with added support for servo lowering/raising speed and pin assignment for Protoneer CNC Shield.
 
 
