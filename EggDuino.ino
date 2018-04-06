@@ -47,9 +47,9 @@
 	#define rotStepsUseable 1100
 	
 	//Buttons (uncomment to enable)
-	//#define prgButton 2 // PRG button
-	//#define penToggleButton 12 // pen up/down button
-	//#define motorsButton 4 // motors enable button
+	#define prgButton A0 // PRG button
+	#define penToggleButton 11 // pen up/down button
+	#define motorsButton 12 // motors enable button
 #endif
 
 #ifdef BOARD_ZAGGO
